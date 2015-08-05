@@ -24,5 +24,5 @@ int main(int argc, char const* argv[])
 
 	ofs << x << " " << y << " " << deg << endl;
 
-	return 0;
+	exit(0);
 }
