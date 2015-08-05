@@ -1,0 +1,13 @@
+#!/usr/bin/awk -f
+# wait_sw_push: Wait a push of a switch button and exit
+# usage: ./wait_sw_push <switch No.>
+
+BEGIN{
+	while(1){
+		f = "/dev/rtswitch" ARGV[1]
+		getline < f
+		close(f)
+		if($0~/0/){exit 0}
+		system("sleep 0.1")
+	}
+}
