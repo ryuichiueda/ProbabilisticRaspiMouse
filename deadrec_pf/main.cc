@@ -3,41 +3,46 @@
 #include <cmath>
 #include "Actions.h"
 #include "ParticleFilter.h"
+#include <unistd.h>
 using namespace std;
 
 int main(int argc, char const* argv[])
 {
-	ofstream ofs_input("/tmp/deadrec");
-	ofstream ofs_particles("/tmp/particles");
+	ofstream ofs("/tmp/particles");
+	int step = 0;
+	double x_mm = 0.0;
+	double y_mm = 0.0;
+	double t_deg = 90.0;
+	ofs << step << " " <<  x_mm << " " << y_mm << " " << t_deg << endl;
 
 	ifstream urandom("/dev/urandom");
 	ParticleFilter pf(10,&urandom);
+	pf.pointReset(x_mm,y_mm,t_deg);
+	ofs << "step 0" << endl;
+	pf.print(&ofs);
 
-	//初期姿勢
-	double x = 0;
-	double y = 0;
-	double deg = 90.0;
-	ofs_input << 0 << " " << x << " " << y << " " << deg << endl;
-	pf.pointReset(x,y,deg);
-	ofs_particles << "step 0" << endl;
-	pf.print(&ofs_particles);
+	while(1){
+		string action;
+		int val;
+		cin >> action >> val;
+		if(!cin)
+			break;
 
-	//1回目の指令
-	Actions::turn(90);
-	deg += 90.0;
-	ofs_input << 1 << " " << x << " " << y << " " << deg << endl;
-	pf.motionUpdate(0.0,90.0);
-	ofs_particles << "step 1" << endl;
-	pf.print(&ofs_particles);
+		step++;
 
-	//2回目の指令
-	Actions::forward(300);
-	x += 300 * cos(deg * 3.141592 / 180);
-	y += 300 * sin(deg * 3.141592 / 180);
-	ofs_input << 2 << " " << x << " " << y << " " << deg << endl;
-	pf.motionUpdate(300.0,0.0);
-	ofs_particles << "step 2" << endl;
-	pf.print(&ofs_particles);
+		if(action == "turn"){
+			Actions::turn(val);
+			pf.motionUpdate(0.0,(double)val);
+		}else if(action == "forward"){
+			Actions::forward(val);
+			pf.motionUpdate((double)val,0.0);
+		}else if(action == "sleep"){
+			usleep(val);
+		}
 
+		ofs << "step " << step << endl;
+		pf.print(&ofs);
+	}
+	
 	exit(0);
 }
