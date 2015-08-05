@@ -1,0 +1,7 @@
+turn 90
+sleep 100000
+forward 300
+sleep 100000
+turn -90
+sleep 100000
+forward 300

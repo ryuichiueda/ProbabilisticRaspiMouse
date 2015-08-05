@@ -1,6 +1,6 @@
 #!/bin/bash -xv
 
-exec &> /run/shm/main.bash.log
+exec &> /run.bash/shm/main.bash.log
 core=$(dirname $0)
 
 while true ; do
@@ -21,14 +21,14 @@ while true ; do
 	$core/wait_sw_push 0
 	$core/wait_sw_unpush 0
 
-	###run###
-	#run起動の合図
+	###run.bash###
+	#run.bash起動の合図
 	echo 0 > /dev/rtbuzzer0
 	echo 1 > /dev/rtled2
-        $core/../run &
+        $core/../run.bash &
 
 	###wait the finish button###
 	$core/wait_sw_push 0
 	$core/wait_sw_unpush 0
-        killall -1 run
+        killall -1 run.bash
 done
