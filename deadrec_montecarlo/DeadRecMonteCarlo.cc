@@ -13,7 +13,7 @@ DeadRecMonteCarlo::DeadRecMonteCarlo(int num, ifstream *ifs)
 	m_step = 0;
 
 	m_distance_max_noise_ratio = 0.05; // 5% noise
-	m_direction_max_noise_ratio = 0.05; // 5% noise
+	m_direction_max_noise_ratio = 0.20; // 20% noise
 }
 
 DeadRecMonteCarlo::~DeadRecMonteCarlo()
