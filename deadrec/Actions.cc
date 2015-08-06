@@ -30,7 +30,7 @@ void Actions::turn(int deg)
 	int msec = (int)floor(400.0/hz * 1000.0*deg/180);
 
 	if(msec < 0)
-		inputMotor(hz,-hz,-msec);
+		inputMotor(-hz,hz,-msec);
 	else
-		inputMotor(-hz,hz,msec);
+		inputMotor(hz,-hz,msec);
 }

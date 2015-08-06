@@ -1,1 +1,1 @@
-./deadrec_pf/run.bash
+./deadrec/run.bash
