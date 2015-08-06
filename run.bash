@@ -1,1 +1,1 @@
-./deadrec/run.bash
+./deadrec_montecarlo/run.bash
