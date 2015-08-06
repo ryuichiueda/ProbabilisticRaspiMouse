@@ -1,0 +1,16 @@
+#!/bin/bash
+
+tmp=/tmp/$$
+
+W=800
+H=800
+
+cat << FIN 
+P2 $W $H 255
+FIN
+
+#world to image coordinate
+gawk -v "w=$W" -v "h=$H" '{print int(w/2 + $2),int(h/2 - $3)}'	|
+gawk -v "w=$W" -v "h=$H" '{a[$1+$2*w] = 1}END{for(i=0;i<w*h;i++){print a[i]==1?0:255}}'
+
+rm -f $tmp-*

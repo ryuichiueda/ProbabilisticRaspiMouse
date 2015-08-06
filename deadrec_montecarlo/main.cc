@@ -11,7 +11,7 @@ int main(int argc, char const* argv[])
 	ofstream ofs("/tmp/particles");
 
 	ifstream urandom("/dev/urandom");
-	DeadRecMonteCarlo pf(10,&urandom);
+	DeadRecMonteCarlo pf(100,&urandom);
 	pf.pointReset(0.0,0.0,90.0,5.0,5.0); //consideration of 5mm, 5deg error on placement
 	pf.print(&ofs);
 
