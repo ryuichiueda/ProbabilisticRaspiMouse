@@ -1,7 +1,6 @@
 #ifndef __DREC_H_
 #define __DREC_H_
 
-#include <vector>
 #include <fstream>
 using namespace std;
 
