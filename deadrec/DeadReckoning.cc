@@ -1,9 +1,4 @@
 #include "DeadReckoning.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <limits.h>
 #include <cmath>
 using namespace std;
 
