@@ -12,7 +12,6 @@ int main(int argc, char const* argv[])
 	ofstream ofs("/tmp/deadrec");
 	int step = 0;
 	DeadReckoning drec(0.0, 0.0, 90.0);
-	ofs << "step " << step << endl;
 	drec.print(&ofs);
 
 	while(1){
@@ -21,11 +20,6 @@ int main(int argc, char const* argv[])
 		cin >> action >> val;
 		if(!cin)
 			break;
-
-		if(action == "sleep"){
-			usleep(val);
-			continue;
-		}
 
 		step++;
 
@@ -37,8 +31,8 @@ int main(int argc, char const* argv[])
 			drec.motionUpdate(0.0,(double)val);
 		}
 
-		ofs << "step " << step << endl;
 		drec.print(&ofs);
+		usleep(100000);
 	}
 	
 	exit(0);

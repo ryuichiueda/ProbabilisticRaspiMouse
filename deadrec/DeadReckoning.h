@@ -18,6 +18,7 @@ public:
 	void print(ofstream *ofs);
 private:
 	Pose m_pose;
+	int m_step;
 };
 
 #endif
