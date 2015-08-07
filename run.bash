@@ -1,1 +1,1 @@
-./binary_sensor/run.bash
+sensor_update/run.bash
