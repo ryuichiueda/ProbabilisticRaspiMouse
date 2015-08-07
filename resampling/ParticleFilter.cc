@@ -61,41 +61,31 @@ void ParticleFilter::resampling(void) // systematic sampling
 	vector<Particle> prev;
 
 	double sum_weight = 0.0;
-	int num = (int)m_particles.size();
-	for(int i = 0;i < num ;i++){
-		if(m_particles[i].w < 1.0e-10)
-			continue;
-
-		//weight is changed to the accumurated value
-		m_particles[i].w += sum_weight;
-		sum_weight = m_particles[i].w;
-		prev.push_back(m_particles[i]);
+	for(auto &p : m_particles){
+		p.w += sum_weight;
+		sum_weight = p.w;
+		prev.push_back(p);
 	}
-	if(prev.size() == 0)
-		return;
 
-	double step = sum_weight / num;
-	int* choice = new int[num];
+	int num = (int)m_particles.size();
+	vector<int> choice(num);
+
 	double accum = getDoubleRand() / num;
+	double step = sum_weight / num;
+
 	int j = 0;
-	for(int i=0;i<num;i++){
-		if(prev[j].w <= accum)
+	for(auto &c : choice){
+		while(prev[j].w <= accum && j < num - 1)
 			j++;
 
-		if(j == num)
-			j--;
-
+		c = j;
 		accum += step;
-		choice[i] = j;
 	}
 
 	for(int i=0;i<num;i++){
-		int j = choice[i];
-		m_particles[i] = prev[j];
+		m_particles[i] = prev[choice[i]];
 		m_particles[i].w = 1.0/num;
 	}
-
-	delete [] choice;
 }
 
 void ParticleFilter::sensorUpdateNoWallFront(void)

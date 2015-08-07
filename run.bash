@@ -1,1 +1,1 @@
-sensor_update/run.bash
+./resampling/run.bash
