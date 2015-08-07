@@ -1,1 +1,1 @@
-./deadrec_montecarlo/run.bash
+./binary_sensor/run.bash
