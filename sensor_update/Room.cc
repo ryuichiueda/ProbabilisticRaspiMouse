@@ -1,5 +1,4 @@
 #include "Room.h"
-#include <iostream>
 #include <cmath>
 using namespace std;
 
@@ -47,8 +46,6 @@ bool Room::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
 	double sin_theta = sin(theta_rad);
 	double cos_theta = cos(theta_rad);
 
-	cerr << "pos" << " " << local_x_mm << " " << local_y_mm << " " << theta_rad / 3.141592 * 180.0 << endl;
-
 	//top
 	if(m_wall.at(0) && sin_theta > 0.0001){
 		double t = (84.0 - local_y_mm)/sin_theta;
@@ -77,8 +74,6 @@ bool Room::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
 		if(fabs(x) <= 84.0)
 			return true;
 	}
-
-	cerr << "nowall" << " " << local_x_mm << " " << local_y_mm << " " << theta_rad / 3.141592 * 180.0 << endl;
 
 	return false;
 }
