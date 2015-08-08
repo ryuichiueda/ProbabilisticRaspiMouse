@@ -15,6 +15,7 @@ public:
 
 	static bool noWallFront(void);
 	static void print(ofstream *ofs);
+private:
 	static SensorValues readRangeSensors(void);
 };
 

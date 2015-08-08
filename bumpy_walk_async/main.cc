@@ -18,30 +18,26 @@ void motion(string action, int val)
 
 int main(int argc, char const* argv[])
 {
-	int seq = 0;
-	bool right = true;
 	bool no_wall = true;
+	int val = 5;
+
+	int counter = 0;
 
 	while(1){
-		if(seq < 3 && no_wall){
+		if(no_wall){
 			thread async_motion(motion,"forward",30);
 			no_wall = Sensors::noWallFront();
-
-			if(rand()%2)	right = true;
-			else		right = false;
-			seq++;
-
 			async_motion.join();
-		}else{
-			int val = 5;
-			if(right)
-				val *= -1;
 
+
+			if(!no_wall){
+				if(counter%5 == 0)
+					val *= -1;
+				counter++;
+			}
+		}else{
 			thread async_motion(motion,"turn",val);
 			no_wall = Sensors::noWallFront();
-
-			seq = 0;
-
 			async_motion.join();
 		}
 	}
