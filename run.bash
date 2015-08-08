@@ -1,1 +1,1 @@
-./resampling/run.bash
+./bumpy_walk/run.bash

@@ -31,4 +31,5 @@ while true ; do
 	$core/wait_sw_push 0
 	$core/wait_sw_unpush 0
         killall -1 run.bash
+        killall -1 main
 done
