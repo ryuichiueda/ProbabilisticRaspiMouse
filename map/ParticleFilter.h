@@ -48,7 +48,6 @@ private:
 
 	void normalizeTheta(double *theta_rad);
 
-	Room *m_room;
 	Map *m_map;
 };
 

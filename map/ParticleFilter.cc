@@ -18,13 +18,11 @@ ParticleFilter::ParticleFilter(int num, ifstream *ifs,string mapfile)
 	m_distance_max_noise_ratio = 0.05; // 5% noise
 	m_direction_max_noise_ratio = 0.20; // 20% noise
 
-	m_room = new Room(false,true,true,true,90.0,90.0);
 	m_map = new Map(mapfile);
 }
 
 ParticleFilter::~ParticleFilter()
 {
-	delete m_room;
 	delete m_map;
 }
 
@@ -93,10 +91,12 @@ void ParticleFilter::resampling(void) // systematic sampling
 
 void ParticleFilter::sensorUpdateNoWallFront(void)
 {
+/*
 	for(auto &p : m_particles){
 		if(m_room->faceWall(p.x_mm,p.y_mm,p.t_rad))
 			p.w *= 0.00001;
 	}
+*/
 }
 
 void ParticleFilter::pointReset(double x_mm,double y_mm,double t_deg,
