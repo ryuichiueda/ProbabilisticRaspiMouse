@@ -21,7 +21,7 @@ int main(int argc, char const* argv[])
 	ofstream ofs("/tmp/particles");
 
 	ifstream urandom("/dev/urandom");
-	ParticleFilter pf(100,&urandom,argv[1]);
+	ParticleFilter pf(1000,&urandom,argv[1]);
 	pf.rangeReset(30.0,180.0*4-30.0,30.0,180.0*4-30.0,0.0,360.0);
 	pf.print(&ofs);
 
@@ -31,6 +31,11 @@ int main(int argc, char const* argv[])
 		cin >> action >> val;
 		if(!cin)
 			break;
+
+		if(action == "sleep"){
+			usleep(val);
+			continue;
+		}
 
 		thread async_motion(motion,action,val);
 		pf.sensorUpdate();

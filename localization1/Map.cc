@@ -10,6 +10,9 @@ Map::Map(string mapfile)
 	m_x_room_num = 4;
 	m_y_room_num = 4;
 
+	m_x_width_mm = m_x_room_num * 180.0;
+	m_y_width_mm = m_y_room_num * 180.0;
+
 	ifstream ifs(mapfile);
 	int flgs = 0;
 
@@ -90,8 +93,27 @@ void Map::printEachRoom(void)
 	}
 }
 
-// theta should be normalized
 bool Map::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
 {
+	int index_x = (int)floor(global_x_mm / 180);
+	int index_y = (int)floor(global_y_mm / 180);
+	if(index_x < 0 || index_x >= m_x_room_num)
+		return false;
+	if(index_y < 0 || index_y >= m_y_room_num)
+		return false;
+
+	Room *rm = &(m_rooms.at(index_x + index_y*m_x_room_num));
+
+	return rm->faceWall(global_x_mm,global_y_mm,theta_rad);
+
+}
+
+bool Map::inTheMap(double x_mm, double y_mm)
+{
+	if(x_mm <= 0.0)			return true;
+	if(x_mm >= m_x_width_mm)	return true;
+	if(y_mm <= 0.0)			return true;
+	if(y_mm >= m_y_width_mm)	return true;
+
 	return false;
 }

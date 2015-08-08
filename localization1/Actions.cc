@@ -9,19 +9,20 @@ Actions::~Actions(){}
 void Actions::inputMotor(int l_hz, int r_hz,int msec)
 {
 	ofstream ofs("/dev/rtmotor0");
-	ofs << r_hz << " " << l_hz << " " << msec << endl;
+	ofs << l_hz << " " << r_hz << " " << msec << endl;
 	ofs.close();
 }
 
 void Actions::forward(int mm)
 {
-	int hz = 400;
-	int msec = (int)floor(400.0/hz * 1000*mm/(45*3.141592));
+	int r_hz = 360;
+	int l_hz = 440;
+	int msec = (int)floor(400.0*2/(r_hz+l_hz) * 1000*mm/(45*3.141592));
 
 	if(msec < 0)
-		inputMotor(-hz,-hz,-msec);
+		inputMotor(-l_hz,-r_hz,-msec);
 	else
-		inputMotor(hz,hz,msec);
+		inputMotor(l_hz,r_hz,msec);
 }
 
 void Actions::turn(int deg)
@@ -30,7 +31,7 @@ void Actions::turn(int deg)
 	int msec = (int)floor(400.0/hz * 1000.0*deg/180);
 
 	if(msec < 0)
-		inputMotor(-hz,hz,-msec);
+		inputMotor(hz,-hz,-msec);
 	else
-		inputMotor(hz,-hz,msec);
+		inputMotor(-hz,hz,msec);
 }
