@@ -1,1 +1,1 @@
-./async_calculation/run.bash
+./resampling_async/run.bash
