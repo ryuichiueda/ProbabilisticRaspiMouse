@@ -35,9 +35,8 @@ int main(int argc, char const* argv[])
 	while(1){
 		if(no_wall){
 			thread async_motion(motion,"forward",30);
-			pf.sensorUpdate();
 			no_wall = Sensors::noWallFront();
-			pf.motionUpdate((double)val,0.0);
+			pf.motionUpdate(30.0,0.0);
 			pf.print(&ofs);
 			async_motion.join();
 
@@ -48,7 +47,6 @@ int main(int argc, char const* argv[])
 			}
 		}else{
 			thread async_motion(motion,"turn",val);
-			pf.sensorUpdate();
 			no_wall = Sensors::noWallFront();
 			pf.motionUpdate(0.0,(double)val);
 			pf.print(&ofs);

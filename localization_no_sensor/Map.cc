@@ -110,10 +110,10 @@ bool Map::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
 
 bool Map::inTheMap(double x_mm, double y_mm)
 {
-	if(x_mm <= 0.0)			return true;
-	if(x_mm >= m_x_width_mm)	return true;
-	if(y_mm <= 0.0)			return true;
-	if(y_mm >= m_y_width_mm)	return true;
+	if(x_mm <= 0.0)			return false;
+	if(x_mm >= m_x_width_mm)	return false;
+	if(y_mm <= 0.0)			return false;
+	if(y_mm >= m_y_width_mm)	return false;
 
-	return false;
+	return true;
 }

@@ -37,14 +37,14 @@ void ParticleFilter::motionUpdate(double fw_delta_mm,double t_delta_deg)
 		double x_noise = pos_noise * cos(pos_noise_angle);
 		double y_noise = pos_noise * sin(pos_noise_angle);
 
-		double tmp_x = p.x_mm + fw_delta_mm * (cos(p.t_rad) + x_noise);
-		double tmp_y = p.y_mm + fw_delta_mm * (sin(p.t_rad) + y_noise);
+		double after_x = p.x_mm + fw_delta_mm * (cos(p.t_rad) + x_noise);
+		double after_y = p.y_mm + fw_delta_mm * (sin(p.t_rad) + y_noise);
 
-		if(!m_map->inTheMap(tmp_x,tmp_y))
+		if(!m_map->inTheMap(after_x,after_y))
 			continue;
 
-		p.x_mm = tmp_x;
-		p.y_mm = tmp_y;
+		p.x_mm = after_x;
+		p.y_mm = after_y;
 
 		//theta方向
 		double ratio = m_direction_max_noise_ratio * (2*getDoubleRand()-1.0);
