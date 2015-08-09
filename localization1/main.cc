@@ -35,7 +35,7 @@ int main(int argc, char const* argv[])
 	while(1){
 		if(i%2==0){
 			cin >> act >> lf >> ls >> rs >> rf;
-			pf.sensorUpdateDebug(lf,rf);
+			//pf.sensorUpdateDebug(lf,rf);
 		}else{
 			cin >> act >> val;
 			if(act == "turn")

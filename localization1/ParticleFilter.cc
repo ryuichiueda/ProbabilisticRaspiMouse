@@ -135,6 +135,8 @@ void ParticleFilter::sensorUpdateNoWallFront(void)
 void ParticleFilter::pointReset(double x_mm,double y_mm,double t_deg,
 				double pos_max_noise_mm,double dir_max_noise_deg)
 {
+	int size = (int)m_particles.size();
+
 	for(auto &p : m_particles){
 		double dir_noise = dir_max_noise_deg *(2*getDoubleRand() - 1.0);
 
@@ -143,7 +145,7 @@ void ParticleFilter::pointReset(double x_mm,double y_mm,double t_deg,
 		double x_noise = pos_noise * cos(pos_noise_angle);
 		double y_noise = pos_noise * sin(pos_noise_angle);
 
-		p = {x_mm+x_noise, y_mm+y_noise, (t_deg + dir_noise)/180*3.141592};
+		p = {x_mm+x_noise, y_mm+y_noise, (t_deg + dir_noise)/180*3.141592,1.0/size};
 
 		normalizeTheta(&(p.t_rad));
 	}
@@ -157,10 +159,13 @@ void ParticleFilter::rangeReset(double x_mm_min,double x_mm_max,
 	double y_mm_delta = y_mm_max - y_mm_min;
 	double t_deg_delta = t_deg_max - t_deg_min;
 
+	int size = (int)m_particles.size();
+
 	for(auto &p : m_particles){
 		p.x_mm = x_mm_min + x_mm_delta * getDoubleRand();
 		p.y_mm = y_mm_min + y_mm_delta * getDoubleRand();
 		p.t_rad = (t_deg_min + t_deg_delta * getDoubleRand())/180*3.141592;
+		p.w = 1.0/size;
 
 		normalizeTheta(&(p.t_rad));
 	}
