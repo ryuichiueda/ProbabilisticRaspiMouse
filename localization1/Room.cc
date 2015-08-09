@@ -145,7 +145,7 @@ bool Room::collisionWest(double org_global_x_mm,double global_x_mm)
 
 bool Room::collisionNorth(double org_global_y_mm, double global_y_mm)
 {
-	if(org_global_y_mm <= global_y_mm)
+	if(org_global_y_mm >= global_y_mm)
 		return false;
 
 	const double margin = 45.0;
@@ -163,7 +163,7 @@ bool Room::collisionNorth(double org_global_y_mm, double global_y_mm)
 
 bool Room::collisionSouth(double org_global_y_mm,double global_y_mm)
 {
-	if(org_global_y_mm >= global_y_mm)
+	if(org_global_y_mm <= global_y_mm)
 		return false;
 
 	const double margin = 45.0;
