@@ -1,1 +1,1 @@
-localization_no_sensor/run.bash
+./localization1/run.bash

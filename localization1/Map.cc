@@ -43,6 +43,8 @@ Map::Map(string mapfile)
 			m_rooms.push_back(Room(north,west,east,south,shift_x,shift_y));
 		}
 	}
+	//print();
+	//printEachRoom();
 }
 
 Map::~Map()
@@ -93,27 +95,49 @@ void Map::printEachRoom(void)
 	}
 }
 
-bool Map::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
+Room *Map::posToRoom(double global_x_mm,double global_y_mm)
 {
 	int index_x = (int)floor(global_x_mm / 180);
-	int index_y = (int)floor(global_y_mm / 180);
+	int index_y = (int)floor((180*4 - global_y_mm) / 180);
 	if(index_x < 0 || index_x >= m_x_room_num)
-		return false;
+		return NULL;
 	if(index_y < 0 || index_y >= m_y_room_num)
-		return false;
+		return NULL;
 
-	Room *rm = &(m_rooms.at(index_x + index_y*m_x_room_num));
+	return &(m_rooms.at(index_x + index_y*m_x_room_num));
+}
+
+bool Map::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
+{
+	Room *rm = posToRoom(global_x_mm,global_y_mm);
+	if(rm == NULL)
+		return false;
 
 	return rm->faceWall(global_x_mm,global_y_mm,theta_rad);
 
 }
 
+bool Map::collision(double org_global_x_mm, double org_global_y_mm,
+			double global_x_mm, double global_y_mm,bool *detail)
+{
+	Room *rm = posToRoom(global_x_mm,global_y_mm);
+	if(rm == NULL)
+		return true;
+
+	detail[0] = rm->collisionNorth(org_global_y_mm,global_y_mm);
+	detail[1] = rm->collisionWest(org_global_x_mm,global_x_mm);
+	detail[2] = rm->collisionEast(org_global_x_mm,global_x_mm);
+	detail[3] = rm->collisionSouth(org_global_y_mm,global_y_mm);
+
+	return detail[0] || detail[1] || detail[2] || detail[3];
+}
+
 bool Map::inTheMap(double x_mm, double y_mm)
 {
-	if(x_mm <= 0.0)			return true;
-	if(x_mm >= m_x_width_mm)	return true;
-	if(y_mm <= 0.0)			return true;
-	if(y_mm >= m_y_width_mm)	return true;
+	if(x_mm <= 0.0)			return false;
+	if(x_mm >= m_x_width_mm)	return false;
+	if(y_mm <= 0.0)			return false;
+	if(y_mm >= m_y_width_mm)	return false;
 
-	return false;
+	return true;
 }

@@ -13,6 +13,10 @@ public:
 	virtual ~Room();
 
 	bool faceWall(double global_x_mm, double global_y_mm, double theta_rad);
+	bool collisionNorth(double org_global_y_mm,double global_y_mm);
+	bool collisionWest(double org_global_x_mm,double global_x_mm);
+	bool collisionEast(double org_global_x_mm,double global_x_mm);
+	bool collisionSouth(double org_global_y_mm,double global_y_mm);
 
 	void print(void);
 private:

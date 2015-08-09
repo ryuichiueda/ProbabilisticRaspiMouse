@@ -16,7 +16,7 @@ ParticleFilter::ParticleFilter(int num, ifstream *ifs,string mapfile)
 	m_step = 0;
 
 	m_distance_max_noise_ratio = 0.05; // 5% noise
-	m_direction_max_noise_ratio = 0.20; // 20% noise
+	m_direction_max_noise_ratio = 0.10; // 10% noise
 
 	m_map = new Map(mapfile);
 }
@@ -31,22 +31,56 @@ void ParticleFilter::motionUpdate(double fw_delta_mm,double t_delta_deg)
 	double t_delta_rad = t_delta_deg * 3.141592 / 180;
 
 	for(auto &p : m_particles){
-		//xy方向
-		double pos_noise = m_distance_max_noise_ratio * getDoubleRand();
-		double pos_noise_angle = getDoubleRand() * 2 * 3.141592;
-		double x_noise = pos_noise * cos(pos_noise_angle);
-		double y_noise = pos_noise * sin(pos_noise_angle);
+		double t_shift = 0.0;//change of direction due to foward action
 
-		p.x_mm += fw_delta_mm * (cos(p.t_rad) + x_noise);
-		p.y_mm += fw_delta_mm * (sin(p.t_rad) + y_noise);
+		if(fw_delta_mm > 0.1){ //xy方向
+			double pos_noise = m_distance_max_noise_ratio * getDoubleRand();
+			double pos_noise_angle = getDoubleRand() * 2 * 3.141592;
+			double x_noise = pos_noise * cos(pos_noise_angle);
+			double y_noise = pos_noise * sin(pos_noise_angle);
+	
+			double nonoise_x = p.x_mm + fw_delta_mm * cos(p.t_rad);
+			double nonoise_y = p.y_mm + fw_delta_mm * sin(p.t_rad);
+	
+			double after_x = p.x_mm + fw_delta_mm * (cos(p.t_rad) + x_noise);
+			double after_y = p.y_mm + fw_delta_mm * (sin(p.t_rad) + y_noise);
+	
+			double x1 = after_x - p.x_mm;
+			double y1 = after_y - p.y_mm;
+			double x2 = nonoise_x - p.x_mm;
+			double y2 = nonoise_y - p.y_mm;
+			t_shift = atan2(x2*y1 - x1*y2,x1*x2 + y1*y2);
+
+			bool col[4];
+			m_map->collision(p.x_mm,p.y_mm,after_x,after_y,col);
+
+			if(col[1] || col[2]){
+				p.t_rad += 0.5*(getDoubleRand() - 0.5)*3.141592;	
+			}else{
+				p.x_mm = after_x;
+			}
+	
+			if(col[0] || col[3]){
+				p.t_rad += 0.5*(getDoubleRand() - 0.5)*3.141592;	
+			}else{
+				p.y_mm = after_y;
+			}
+		}
 
 		//theta方向
 		double ratio = m_direction_max_noise_ratio * (2*getDoubleRand()-1.0);
-		p.t_rad += t_delta_rad * (1.0 + ratio);
-
+		p.t_rad += t_delta_rad * (1.0 + ratio) + t_shift;
 		normalizeTheta(&(p.t_rad));
 	}
 	m_step++;
+}
+
+void ParticleFilter::sensorUpdateDebug(int left, int right)
+{
+	if(left < 500.0 && right < 500.0){
+		sensorUpdateNoWallFront();
+		resampling();
+	}
 }
 
 void ParticleFilter::sensorUpdate(void)
@@ -93,9 +127,6 @@ void ParticleFilter::sensorUpdateNoWallFront(void)
 {
 	for(auto &p : m_particles){
 		if(m_map->faceWall(p.x_mm,p.y_mm,p.t_rad)){
-			p.w *= 0.00001;
-		}
-		if(m_map->inTheMap(p.x_mm,p.y_mm)){
 			p.w *= 0.00001;
 		}
 	}

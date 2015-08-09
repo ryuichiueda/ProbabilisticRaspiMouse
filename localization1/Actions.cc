@@ -15,8 +15,8 @@ void Actions::inputMotor(int l_hz, int r_hz,int msec)
 
 void Actions::forward(int mm)
 {
-	int r_hz = 360;
-	int l_hz = 440;
+	int r_hz = 370;
+	int l_hz = 430;
 	int msec = (int)floor(400.0*2/(r_hz+l_hz) * 1000*mm/(45*3.141592));
 
 	if(msec < 0)
@@ -28,10 +28,11 @@ void Actions::forward(int mm)
 void Actions::turn(int deg)
 {
 	int hz = 400;
+	int adj = 70;
 	int msec = (int)floor(400.0/hz * 1000.0*deg/180);
 
 	if(msec < 0)
-		inputMotor(hz,-hz,-msec);
+		inputMotor(hz+adj,-hz-adj,-msec);
 	else
-		inputMotor(-hz,hz,msec);
+		inputMotor(-hz-adj,hz+adj,msec);
 }

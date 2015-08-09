@@ -4,8 +4,10 @@ tmp=/tmp/$$
 
 cat > $tmp-ps
 
-for i in $(seq 0 1000) ; do
-	grep "^$i " $tmp-ps	> $tmp-step
+for i in $(seq -w 0 1000) ; do
+	j=$(sed 's/^0*//' <<< $i)
+	[ "$j" = "" ] && j=0
+	grep "^$j " $tmp-ps	> $tmp-step
 	[ "$(wc -l < $tmp-step)" -eq 0 ] && break
 
 	cat $tmp-step		|

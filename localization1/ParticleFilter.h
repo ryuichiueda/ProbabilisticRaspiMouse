@@ -20,6 +20,7 @@ public:
 
 	void motionUpdate(double fw_delta_mm,double t_delta_deg);
 	void sensorUpdate(void);
+	void sensorUpdateDebug(int left, int right);
 
 	void pointReset(double x_mm,double y_mm,double t_deg,
 			double pos_max_noise_mm,double dir_max_noise_deg);

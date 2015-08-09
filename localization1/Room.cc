@@ -106,3 +106,75 @@ bool Room::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
 
 	return false;
 }
+
+bool Room::collisionEast(double org_global_x_mm,double global_x_mm)
+{
+	if(org_global_x_mm >= global_x_mm)
+		return false;
+
+	const double margin = 45.0;
+	const double wall_thick = 6.0;
+	double local_x_mm = global_x_mm - m_x_origin_mm;
+
+	//east
+	if(m_wall.at(2)){
+		if(90.0 - local_x_mm < margin + wall_thick){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Room::collisionWest(double org_global_x_mm,double global_x_mm)
+{
+	if(org_global_x_mm <= global_x_mm)
+		return false;
+
+	const double margin = 45.0;
+	const double wall_thick = 6.0;
+	double local_x_mm = global_x_mm - m_x_origin_mm;
+
+	//east
+	if(m_wall.at(1)){
+		if(90.0 + local_x_mm < margin + wall_thick){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Room::collisionNorth(double org_global_y_mm, double global_y_mm)
+{
+	if(org_global_y_mm <= global_y_mm)
+		return false;
+
+	const double margin = 45.0;
+	const double wall_thick = 6.0;
+	double local_y_mm = global_y_mm - m_y_origin_mm;
+
+	//north
+	if(m_wall.at(0)){
+		if(90.0 - local_y_mm < margin + wall_thick){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Room::collisionSouth(double org_global_y_mm,double global_y_mm)
+{
+	if(org_global_y_mm >= global_y_mm)
+		return false;
+
+	const double margin = 45.0;
+	const double wall_thick = 6.0;
+	double local_y_mm = global_y_mm - m_y_origin_mm;
+
+	//south
+	if(m_wall.at(3)){
+		if(local_y_mm + 90.0 < margin + wall_thick){
+			return true;
+		}
+	}
+	return false;
+}
