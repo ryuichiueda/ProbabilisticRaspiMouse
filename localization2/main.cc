@@ -24,8 +24,8 @@ int main(int argc, char const* argv[])
 
 	ifstream urandom("/dev/urandom");
 	ParticleFilter pf(1000,&urandom,argv[1]);
-//	pf.rangeReset(30.0,180.0*4-30.0,30.0,180.0*4-30.0,0.0,360.0);
-	pf.pointReset(180.0*3+90.0,90.0,180.0,20.0,5.0);
+	pf.rangeReset(30.0,180.0*4-30.0,30.0,180.0*4-30.0,0.0,360.0);
+//	pf.pointReset(180.0*3+90.0,90.0,180.0,20.0,5.0);
 	pf.print(&ofs);
 
 	string act;
@@ -36,6 +36,7 @@ int main(int argc, char const* argv[])
 		if(i%2==0){
 			cin >> act >> lf >> ls >> rs >> rf;
 			pf.sensorUpdateDebug(lf,rf);
+			pf.sensorUpdateDebug2(lf,ls,rs,rf);
 		}else{
 			cin >> act >> val;
 			if(act == "turn")
