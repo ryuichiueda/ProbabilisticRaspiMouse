@@ -28,6 +28,7 @@ int main(int argc, char const* argv[])
 //	pf.pointReset(180.0*3+90.0,90.0,180.0,20.0,5.0);
 	pf.print(&ofs);
 
+/*
 	string act;
 	int lf, ls, rs, rf;
 	int val;
@@ -51,7 +52,7 @@ int main(int argc, char const* argv[])
 			exit(0);
 		i++;
 	}
-/*
+*/
 ///////////////////////////////////////
 
 	bool no_wall = true;
@@ -80,6 +81,5 @@ int main(int argc, char const* argv[])
 			async_motion.join();
 		}
 	}
-*/
 	exit(0);
 }
