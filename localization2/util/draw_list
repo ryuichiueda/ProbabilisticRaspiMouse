@@ -2,7 +2,9 @@
 
 tmp=/tmp/$$
 
-for i in $(seq -w 0 1000) ; do
+cat "$2"			|
+awk '{printf("%04d\n",$1)}'	|
+while read i ; do
 	j=$(sed 's/^0*//' <<< $i)
 	[ "$j" = "" ] && j=0
 	grep "^$j " "$1"	|
@@ -14,8 +16,4 @@ for i in $(seq -w 0 1000) ; do
 done
 
 
-convert -loop 1 *.ppm animation_all.gif
 rm -f $tmp-*
-rm *.ppm
-
-open -a safari animation_all.gif

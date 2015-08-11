@@ -41,7 +41,7 @@ int main(int argc, char const* argv[])
         int i = 0;
         while(1){
                 if(i%2==0){
-                        cin >> act >> lf >> ls >> rs >> rf;
+                        cin >> lf >> ls >> rs >> rf;
                         pf.sensorUpdateDebug(lf,rf);
                         pf.sensorUpdateDebug2(lf,ls,rs,rf);
                 }else{
@@ -64,10 +64,24 @@ int main(int argc, char const* argv[])
 	int t_val = 5;
 
 	time_t start = time(NULL);
-	while(time(NULL) - start < 10){
+	int t = time(NULL) - start;
+	while(t < 15){
 		thread async_sensor(sensing);
 
-		if(no_wall){
+		if((t >= 5 && t <= 6) || (!no_wall)){
+			thread async_motion(motion,"turn",t_val);
+			async_sensor.join();
+			pf.sensorUpdate();	
+			no_wall = Sensors::noWallFront();
+
+			pf.motionUpdate(0.0,(double)t_val);
+			Sensors::print(&log);
+			log << "turn " << t_val << endl;
+
+			pf.print(&ofs);
+			async_motion.join();
+		//}else if(no_wall){
+		}else{
 			thread async_motion(motion,"forward",30);
 			async_sensor.join();
 			pf.sensorUpdate();	
@@ -82,7 +96,7 @@ int main(int argc, char const* argv[])
 
 			if(rand()%2==0)
 				t_val *= -1;
-		}else{
+		}/*else{
 			thread async_motion(motion,"turn",t_val);
 			async_sensor.join();
 			pf.sensorUpdate();	
@@ -94,8 +108,8 @@ int main(int argc, char const* argv[])
 
 			pf.print(&ofs);
 			async_motion.join();
-		}
-
+		}*/
+		t = time(NULL) - start;
 	}
 	exit(0);
 }

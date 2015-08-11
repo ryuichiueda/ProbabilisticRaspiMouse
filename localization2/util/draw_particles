@@ -38,3 +38,4 @@ gawk -v "w=$W" -v "h=$H" '
 	}'
 
 rm -f $tmp-*
+
