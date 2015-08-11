@@ -15,8 +15,8 @@ ParticleFilter::ParticleFilter(int num, ifstream *ifs,string mapfile)
 	m_rand_ifs = ifs;
 	m_step = 0;
 
-	m_distance_max_noise_ratio = 0.50; // 5% noise
-	m_direction_max_noise_ratio = 0.50; // 10% noise
+	m_distance_max_noise_ratio = 0.10; // 5% noise
+	m_direction_max_noise_ratio = 0.10; // 10% noise
 
 	m_map = new Map(mapfile);
 }

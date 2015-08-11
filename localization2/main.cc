@@ -60,8 +60,26 @@ int main(int argc, char const* argv[])
         }
 */
 
+/*
+	for(int k=0;k<18;k++){
+		thread async_sensor(sensing);
+		thread async_motion(motion,"turn",10);
+		async_sensor.join();
+	//	pf.sensorUpdate();	
+		Sensors::noWallFront();
+
+		pf.motionUpdate(0.0,(double)10);
+		Sensors::print(&log);
+		log << "turn " << 5 << endl;
+
+		pf.print(&ofs);
+		async_motion.join();
+	}
+	exit(0);
+*/
+
 	bool no_wall = true;
-	int t_val = 5;
+	int t_val = 10;
 
 	time_t start = time(NULL);
 	int t = time(NULL) - start;
@@ -80,7 +98,6 @@ int main(int argc, char const* argv[])
 
 			pf.print(&ofs);
 			async_motion.join();
-		//}else if(no_wall){
 		}else{
 			thread async_motion(motion,"forward",30);
 			async_sensor.join();
@@ -109,6 +126,25 @@ int main(int argc, char const* argv[])
 			pf.print(&ofs);
 			async_motion.join();
 		}*/
+		t = time(NULL) - start;
+	}
+
+	start = time(NULL);
+	t = time(NULL) - start;
+	while(t < 2){
+		thread async_sensor(sensing);
+		thread async_motion(motion,"turn",t_val);
+		async_sensor.join();
+		pf.sensorUpdate();	
+		no_wall = Sensors::noWallFront();
+
+		pf.motionUpdate(0.0,(double)t_val);
+		Sensors::print(&log);
+		log << "turn " << t_val << endl;
+
+		pf.print(&ofs);
+		async_motion.join();
+
 		t = time(NULL) - start;
 	}
 	exit(0);

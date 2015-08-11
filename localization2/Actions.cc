@@ -28,7 +28,7 @@ void Actions::forward(int mm)
 void Actions::turn(int deg)
 {
 	int hz = 400;
-	int adj = 70;
+	int adj = -40;//70;
 	int msec = (int)floor(400.0/hz * 1000.0*deg/180);
 
 	if(msec < 0)
