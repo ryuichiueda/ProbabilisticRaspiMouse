@@ -1,30 +1,30 @@
 #include "Sensors.h"
 using namespace std;
 
-Sensors::Sensors(){}
-Sensors::~Sensors(){}
+SensorValues Sensors::m_values = {0,0,0,0};
 
 bool Sensors::noWallFront(void)
 {
-	SensorValues vs = readRangeSensors();
-	return (vs.left_front <= 500 && vs.right_front <= 500);
+	return m_values.left_front <= 500 && m_values.right_front <= 500;
+}
+
+bool Sensors::wallFront(void)
+{
+	return m_values.left_front >= 500 && m_values.right_front >= 500
+		&& m_values.left_side >= 500 && m_values.right_side >= 500;
 }
 
 void Sensors::print(ofstream *ofs)
 {
-	SensorValues ans = readRangeSensors();
-	*ofs << ans.left_front << " " << ans.left_side << " "
-		<< ans.right_side << " " << ans.right_front << endl;
+	*ofs << m_values.left_front << " " << m_values.left_side << " "
+		<< m_values.right_side << " " << m_values.right_front << endl;
 }
 
-SensorValues Sensors::readRangeSensors(void)
+void Sensors::update(void)
 {
-	SensorValues ans;
-
 	ifstream ifs("/dev/rtlightsensor0");
-	ifs >> ans.right_front >> ans.right_side >> ans.left_side >> ans.left_front;
+	ifs >> m_values.right_front >> m_values.right_side
+		>> m_values.left_side >> m_values.left_front;
 	ifs.close();
-
-	return ans;
 }
 

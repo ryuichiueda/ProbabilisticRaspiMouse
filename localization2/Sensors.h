@@ -10,13 +10,16 @@ struct SensorValues {
 
 class Sensors {
 public:
-	Sensors();
-	~Sensors();
+	Sensors(){}
+	~Sensors(){}
 
 	static bool noWallFront(void);
+	static bool wallFront(void);
 	static void print(ofstream *ofs);
+
+	static void update(void);
 private:
-	static SensorValues readRangeSensors(void);
+	static SensorValues m_values;
 };
 
 #endif

@@ -55,13 +55,13 @@ void ParticleFilter::motionUpdate(double fw_delta_mm,double t_delta_deg)
 			m_map->collision(p.x_mm,p.y_mm,after_x,after_y,col);
 
 			if(col[1] || col[2]){
-				p.t_rad += 0.5*(getDoubleRand() - 0.5)*3.141592;	
+				p.t_rad += (getDoubleRand() - 0.5)*3.141592;	
 			}else{
 				p.x_mm = after_x;
 			}
 	
 			if(col[0] || col[3]){
-				p.t_rad += 0.5*(getDoubleRand() - 0.5)*3.141592;	
+				p.t_rad += (getDoubleRand() - 0.5)*3.141592;	
 			}else{
 				p.y_mm = after_y;
 			}
@@ -98,8 +98,11 @@ void ParticleFilter::sensorUpdate(void)
 {
 	if(Sensors::noWallFront()){
 		sensorUpdateNoWallFront();
-		resampling();
 	}
+	if(Sensors::wallFront()){
+		sensorUpdateWallFront();
+	}
+	resampling();
 }
 
 void ParticleFilter::resampling(void) // systematic sampling
@@ -208,7 +211,8 @@ double ParticleFilter::getDoubleRand()
 void ParticleFilter::print(ofstream *ofs)
 {
 	for(auto &p : m_particles){
-		*ofs << m_step << " " << (int)p.x_mm << " " << (int)p.y_mm << " "
+		*ofs << m_step << " " << time(NULL)
+			<< " " << (int)p.x_mm << " " << (int)p.y_mm << " "
 			<< (int)(p.t_rad / 3.141592 * 180) << " " << p.w << endl;
 	}
 }

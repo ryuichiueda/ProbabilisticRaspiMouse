@@ -15,8 +15,8 @@ void Actions::inputMotor(int l_hz, int r_hz,int msec)
 
 void Actions::forward(int mm)
 {
-	int r_hz = 370;
-	int l_hz = 430;
+	int r_hz = 385;
+	int l_hz = 415;
 	int msec = (int)floor(400.0*2/(r_hz+l_hz) * 1000*mm/(45*3.141592));
 
 	if(msec < 0)

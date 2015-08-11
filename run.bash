@@ -1,1 +1,1 @@
-./localization1/run.bash
+./localization2/run.bash
