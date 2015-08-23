@@ -1,0 +1,21 @@
+#!/bin/bash -xv
+
+tmp=/tmp/$$
+
+for i in $(seq -w 0 1000) ; do
+	j=$(sed 's/^0*//' <<< $i)
+	[ "$j" = "" ] && j=0
+	grep "^$j " "$1"	|
+	delf 2	> $tmp-step
+	[ "$(wc -l < $tmp-step)" -eq 0 ] && break
+
+	cat $tmp-step		|
+	./draw_particles 	> $i.ppm
+done
+
+
+convert -loop 1 *.ppm animation_all.gif
+rm -f $tmp-*
+rm *.ppm
+
+open -a safari animation_all.gif

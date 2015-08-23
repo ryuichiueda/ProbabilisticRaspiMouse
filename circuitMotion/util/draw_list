@@ -1,0 +1,19 @@
+#!/bin/bash -xv
+
+tmp=/tmp/$$
+
+cat "$2"			|
+awk '{printf("%04d\n",$1)}'	|
+while read i ; do
+	j=$(sed 's/^0*//' <<< $i)
+	[ "$j" = "" ] && j=0
+	grep "^$j " "$1"	|
+	delf 2	> $tmp-step
+	[ "$(wc -l < $tmp-step)" -eq 0 ] && break
+
+	cat $tmp-step		|
+	./draw_particles 	> $i.ppm
+done
+
+
+rm -f $tmp-*
