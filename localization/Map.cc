@@ -87,6 +87,14 @@ void Map::print(ofstream *ofs)
 	}
 }
 
+void Map::printImage(ofstream *ofs)
+{
+	bool image[360*360];
+	for(auto r : m_rooms){
+		r.printImage(ofs,image);
+	}
+}
+
 void Map::printEachRoom(ofstream *ofs)
 {
 	int i = 0;

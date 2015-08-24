@@ -20,6 +20,7 @@ public:
 
 	void print(ofstream *ofs);
 	void printEachRoom(ofstream *ofs);
+	void printImage(ofstream *ofs);
 
 private:
 	vector<bool> m_horizontal;

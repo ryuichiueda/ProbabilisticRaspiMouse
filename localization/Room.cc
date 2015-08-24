@@ -71,6 +71,11 @@ void Room::print(ofstream *ofs)
 		*ofs << "+       +" << endl;
 }
 
+void Room::printImage(ofstream *ofs,bool *image)
+{
+
+}
+
 // theta should be normalized
 bool Room::faceWall(double global_x_mm, double global_y_mm, double theta_rad)
 {

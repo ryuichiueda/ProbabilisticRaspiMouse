@@ -14,6 +14,6 @@ sudo chmod 666 /dev/rt*
 
 echo 1 > /dev/rtmotoren0
 
-$dir/main $dir/map $dir/policy $dir/values.ans
+cat $dir/input | $dir/main $dir/map
 
 echo 0 > /dev/rtmotoren0

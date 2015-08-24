@@ -12,7 +12,7 @@ P3 $W $H 255
 FIN
 
 #world to image coordinate
-gawk -v "w=$W" -v "h=$H" '$6>0.0{print int($3/2),int($4/2),$5*3.151492/180}'	|
+gawk -v "w=$W" -v "h=$H" '$6>0.0001{print int($3/2),int($4/2),$5*3.151492/180}'	|
 gawk -v "w=$W" -v "h=$H" '$1>=0 && $1<w && $2>=0 && $2<h'	|
 gawk -v "w=$W" -v "h=$H" '
 	{

@@ -80,10 +80,12 @@ void ParticleFilter::sensorUpdate(void)
 	if(SensorRange::noWallFront()){
 		sensorUpdateNoWallFront();
 	}
+/*
 	if(SensorRange::wallFront()){
 		sensorUpdateWallFront();
 	}
-	resampling();
+*/
+//	resampling();
 }
 
 void ParticleFilter::resampling(void) // systematic sampling

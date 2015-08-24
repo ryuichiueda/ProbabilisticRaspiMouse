@@ -21,6 +21,7 @@ public:
 	bool isClosed(void);
 
 	void print(ofstream *ofs);
+	void printImage(ofstream *ofs,bool *image);
 private:
 	//vector<bool> m_pin;
 	vector<bool> m_wall;
