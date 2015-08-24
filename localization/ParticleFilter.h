@@ -29,6 +29,7 @@ public:
 	void rangeReset(double x_mm_min,double x_mm_max,
 			double y_mm_min,double y_mm_max,
 			double t_deg_min,double t_deg_max);
+
 	void randomReset(void);
 
 	void print(ofstream *ofs);
@@ -46,7 +47,9 @@ protected:
 
 	//important procedures
 	void resampling(void);
-	void reset(void);
+	bool reset(void);
+	void sensorReset(void);
+	void expansionReset(void);
 
 	//stats
 	double sumOfWeights(void);
@@ -67,6 +70,8 @@ protected:
 	//parameters
 	static const double m_near_zero;
 	static const double m_reset_th;
+	static const double m_sensor_reset_th;
+	static const double m_expansion_reset_th;
 };
 
 #endif

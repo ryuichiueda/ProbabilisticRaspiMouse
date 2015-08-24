@@ -8,7 +8,9 @@
 using namespace std;
 
 const double ParticleFilter::m_near_zero = 1e-10;
-const double ParticleFilter::m_reset_th = 0.05;
+const double ParticleFilter::m_sensor_reset_th = 0.05;
+const double ParticleFilter::m_expansion_reset_th = 0.20;
+const double ParticleFilter::m_reset_th = 0.20;
 
 ParticleFilter::ParticleFilter(int num, ifstream *ifs,string mapfile)
 {
@@ -91,12 +93,8 @@ void ParticleFilter::sensorUpdate(void)
 		sensorUpdateWallFront();
 	}
 
-	if(sumOfWeights() < m_reset_th){
-		cerr << "reset" << endl;
-		reset();
-	}else{
+	if(!reset())
 		resampling();
-	}
 }
 
 void ParticleFilter::resampling(void) // systematic sampling
@@ -309,7 +307,73 @@ double ParticleFilter::sumOfWeights(void)
 	return sum;
 }
 
-void ParticleFilter::reset(void)
+bool ParticleFilter::reset(void)
 {
-	randomReset();
+	static int reset_times = 0;
+	if(sumOfWeights() < m_reset_th){
+		if(reset_times > 0){
+			cerr << "sr" << endl;
+			sensorReset();
+		}else{
+			cerr << "er" << endl;
+			expansionReset();
+		}
+
+		reset_times++;
+		cerr << reset_times << endl;
+		return true;
+	}else{
+		reset_times = 0;
+	}
+	return false;
+
+//	randomReset();
+}
+
+//inefficient implementation
+void ParticleFilter::sensorReset(void)
+{
+	int size = (int)m_particles.size();
+
+	for(auto &p : m_particles){
+		p.x_mm = -100000.0;
+		p.y_mm = -100000.0;
+
+		while(!m_map->inTheMaze(p.x_mm,p.y_mm)){
+			p.x_mm = m_map->getWidth() * getDoubleRand();
+			p.y_mm = m_map->getHeight() * getDoubleRand();
+			p.t_rad = (360 * getDoubleRand())/180*3.141592;
+
+			if(SensorRange::noWallFront()){
+				if(m_map->faceWall(p.x_mm,p.y_mm,p.t_rad))
+					p.x_mm = -100000.0;
+			}
+			if(SensorRange::wallFront()){
+				if(!m_map->faceWall(p.x_mm,p.y_mm,p.t_rad))
+					p.x_mm = -100000.0;
+			}
+		}
+		p.w = 1.0/size;
+		normalizeTheta(&(p.t_rad));
+	}
+}
+
+void ParticleFilter::expansionReset(void)
+{
+	const double max_exp_length = 50.0;
+	const double max_exp_angle = 10.0;
+
+	int size = (int)m_particles.size();
+
+	for(auto &p : m_particles){
+		double exp_length = max_exp_length * getDoubleRand();
+		double dir_rad = (360 * getDoubleRand())/180*3.141592;
+		p.x_mm += exp_length * cos(dir_rad);
+		p.y_mm += exp_length * sin(dir_rad);
+		p.t_rad += (2*max_exp_angle*getDoubleRand() - max_exp_angle)/180*3.141592;
+
+		p.w = 1.0/size;
+		normalizeTheta(&(p.t_rad));
+	}
+
 }
