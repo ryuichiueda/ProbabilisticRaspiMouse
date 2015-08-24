@@ -24,6 +24,10 @@ private:
 	int m_cell_num_y;
 	int m_cell_num_t;
 
+	double m_init_x_mm;
+	double m_init_y_mm;
+	double m_init_t_deg;
+
 	string getAction(double x_mm,double y_mm,double theta_deg);
 };
 

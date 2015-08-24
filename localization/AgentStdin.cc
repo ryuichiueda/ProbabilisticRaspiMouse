@@ -33,7 +33,8 @@ void AgentStdin::doAction(void)
 	//wrong
 //	pf.pointReset(180.0*3+90.0,90.0,270.0,5.0,3.0); //consideration of 5mm, 3deg error on placement
 //	slightly different
-	pf.pointReset(180.0*3+90.0,90.0,75.0,1.0,1.0);
+//	pf.pointReset(180.0*3+90.0,90.0,75.0,1.0,1.0);
+	pf.randomReset();
 
 	ofstream ofs("/tmp/particles");
 	pf.print(&ofs);
@@ -41,8 +42,6 @@ void AgentStdin::doAction(void)
         while(1){
 		SensorRange::update();
 		pf.sensorUpdate();
-//	pf.print(&ofs);
-// exit(0);
 
                 string action;
                 int val;
@@ -93,6 +92,10 @@ void AgentStdin::doAction(void)
 
                 usleep(100000);
         }
+
+	cout << "my position:" << endl;
+	Particle p = pf.getAverage();
+	cout << p.x_mm << "\t" << p.y_mm << "\t" << p.t_rad/3.141592*180.0 << endl;
 	exit(0);
 }
 

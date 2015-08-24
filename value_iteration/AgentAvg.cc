@@ -24,7 +24,19 @@ AgentAvg::AgentAvg(int argc, char const* argv[]) : Agent(argc,argv)
 	m_cell_num_y = 27;
 	m_cell_num_t = 72;
 
+	m_init_x_mm = 180.0*3+90.0;
+	m_init_y_mm = 90.0;
+	m_init_t_deg = 90.0;
+
 	m_policy.assign(m_cell_num_x*m_cell_num_y*m_cell_num_t,"");
+
+	if(argc == 7){
+		m_init_x_mm = (double)atof(argv[4]);
+		m_init_y_mm = (double)atof(argv[5]);
+		m_init_t_deg = (double)atof(argv[6]);
+
+		cerr << m_init_x_mm << ' ' << m_init_y_mm << ' ' << m_init_t_deg << endl;
+	}
 
 	int state_num;
 	string action;
@@ -50,7 +62,7 @@ void AgentAvg::doAction(void)
 				double y_mm_min,double y_mm_max,
 				double t_deg_min,double t_deg_max)
 */
-	pf.pointReset(180.0*3+90.0,90.0,90.0,5.0,3.0); //consideration of 5mm, 3deg error on placement
+	pf.pointReset(m_init_x_mm,m_init_y_mm,m_init_t_deg,5.0,3.0); //consideration of 5mm, 3deg error on placement
 
 	ofstream ofs("/tmp/particles");
 	pf.print(&ofs);
@@ -83,11 +95,33 @@ void AgentAvg::doAction(void)
                         Actions::turn(-5);
                         SensorGyro::update();
                         double diff = SensorGyro::getDeltaDeg();
+			if(diff >= 180.0)	diff -= 360.0;
+			else if(diff <= -180.0)	diff += 360.0;
+
+                        pf.motionUpdate(0.0,0.0,diff);
+			double error = -5.0 - diff;
+                        Actions::turn(error*2);
+                        SensorGyro::update();
+                        diff = SensorGyro::getDeltaDeg();
+			if(diff >= 180.0)	diff -= 360.0;
+			else if(diff <= -180.0)	diff += 360.0;
+
                         pf.motionUpdate(0.0,0.0,diff);
 		}else if(str == "ccw"){
                         Actions::turn(5);
                         SensorGyro::update();
                         double diff = SensorGyro::getDeltaDeg();
+			if(diff >= 180.0)	diff -= 360.0;
+			else if(diff <= -180.0)	diff += 360.0;
+
+                        pf.motionUpdate(0.0,0.0,diff);
+			double error = 5.0 - diff;
+                        Actions::turn(error*2);
+                        SensorGyro::update();
+                        diff = SensorGyro::getDeltaDeg();
+			if(diff >= 180.0)	diff -= 360.0;
+			else if(diff <= -180.0)	diff += 360.0;
+
                         pf.motionUpdate(0.0,0.0,diff);
 		}else{
 			break;
