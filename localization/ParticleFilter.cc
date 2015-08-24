@@ -7,6 +7,9 @@
 #include "SensorRange.h"
 using namespace std;
 
+const double ParticleFilter::m_near_zero = 1e-10;
+const double ParticleFilter::m_reset_th = 0.05;
+
 ParticleFilter::ParticleFilter(int num, ifstream *ifs,string mapfile)
 {
 	Particle p{0.0, 0.0, 0.0, 1.0/num};
@@ -77,15 +80,23 @@ void ParticleFilter::motionUpdate(double fw_delta_mm,double side_delta_mm,double
 
 void ParticleFilter::sensorUpdate(void)
 {
+	sensorUpdateMazeInOut();
+
 	if(SensorRange::noWallFront()){
+		cerr << "no wall" << endl;
 		sensorUpdateNoWallFront();
 	}
-/*
 	if(SensorRange::wallFront()){
+		cerr << "wall" << endl;
 		sensorUpdateWallFront();
 	}
-*/
-//	resampling();
+
+	if(sumOfWeights() < m_reset_th){
+		cerr << "reset" << endl;
+		reset();
+	}else{
+		resampling();
+	}
 }
 
 void ParticleFilter::resampling(void) // systematic sampling
@@ -124,7 +135,7 @@ void ParticleFilter::sensorUpdateWallFront(void)
 {
 	for(auto &p : m_particles){
 		if(!m_map->faceWall(p.x_mm,p.y_mm,p.t_rad)){
-			p.w *= 0.00001;
+			p.w *= m_near_zero;
 		}
 	}
 }
@@ -133,7 +144,7 @@ void ParticleFilter::sensorUpdateNoWallFront(void)
 {
 	for(auto &p : m_particles){
 		if(m_map->faceWall(p.x_mm,p.y_mm,p.t_rad)){
-			p.w *= 0.00001;
+			p.w *= m_near_zero;
 		}
 	}
 }
@@ -168,11 +179,35 @@ void ParticleFilter::rangeReset(double x_mm_min,double x_mm_max,
 	int size = (int)m_particles.size();
 
 	for(auto &p : m_particles){
-		p.x_mm = x_mm_min + x_mm_delta * getDoubleRand();
-		p.y_mm = y_mm_min + y_mm_delta * getDoubleRand();
+		p.x_mm = -100000.0;
+		p.y_mm = -100000.0;
+
+		while(!m_map->inTheMaze(p.x_mm,p.y_mm)){
+			p.x_mm = x_mm_min + x_mm_delta * getDoubleRand();
+			p.y_mm = y_mm_min + y_mm_delta * getDoubleRand();
+		}
+
 		p.t_rad = (t_deg_min + t_deg_delta * getDoubleRand())/180*3.141592;
 		p.w = 1.0/size;
+		normalizeTheta(&(p.t_rad));
+	}
+}
 
+void ParticleFilter::randomReset(void)
+{
+	int size = (int)m_particles.size();
+
+	for(auto &p : m_particles){
+		p.x_mm = -100000.0;
+		p.y_mm = -100000.0;
+
+		while(!m_map->inTheMaze(p.x_mm,p.y_mm)){
+			p.x_mm = m_map->getWidth() * getDoubleRand();
+			p.y_mm = m_map->getHeight() * getDoubleRand();
+		}
+
+		p.t_rad = (360 * getDoubleRand())/180*3.141592;
+		p.w = 1.0/size;
 		normalizeTheta(&(p.t_rad));
 	}
 }
@@ -255,6 +290,26 @@ Particle ParticleFilter::getAverage(void)
 		ans.t_rad = t_rad_avg_shift;
 	}
 
-	//cerr << ans.x_mm << ' ' << ans.y_mm << ' ' << ans.t_rad/3.141592*180 << endl;
 	return ans;
+}
+
+void ParticleFilter::sensorUpdateMazeInOut(void)
+{
+	for(auto &p : m_particles)
+		if(!m_map->inTheMaze(p.x_mm,p.y_mm))
+			p.w *= m_near_zero;
+}
+
+double ParticleFilter::sumOfWeights(void)
+{
+	double sum = 0.0;
+	for(auto p : m_particles)
+		sum += p.w;
+
+	return sum;
+}
+
+void ParticleFilter::reset(void)
+{
+	randomReset();
 }

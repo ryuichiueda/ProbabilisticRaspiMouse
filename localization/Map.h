@@ -16,11 +16,14 @@ public:
 	bool faceWall(double global_x_mm, double global_y_mm, double theta_rad);
 	bool collision(double org_global_x_mm, double org_global_y_mm,
 			double global_x_mm, double global_y_mm,bool *detail);
-	bool inTheMap(double x_mm, double y_mm);
+	bool inTheMaze(double x_mm, double y_mm);
 
 	void print(ofstream *ofs);
 	void printEachRoom(ofstream *ofs);
 	void printImage(ofstream *ofs);
+
+	double getWidth(void){return (double)m_x_width_mm;}
+	double getHeight(void){return (double)m_y_width_mm;}
 
 private:
 	vector<bool> m_horizontal;

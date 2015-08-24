@@ -29,19 +29,27 @@ public:
 	void rangeReset(double x_mm_min,double x_mm_max,
 			double y_mm_min,double y_mm_max,
 			double t_deg_min,double t_deg_max);
+	void randomReset(void);
 
 	void print(ofstream *ofs);
 
 	Particle getAverage(void);
 protected:
-	ifstream *m_rand_ifs;
+	ifstream *m_rand_ifs; // /dev/urandom
 	vector<Particle> m_particles;
-	int m_step;
+	int m_step; //current time step (TODO: the agent class should have this value.)
 
+	//update functions
 	void sensorUpdateNoWallFront(void);
 	void sensorUpdateWallFront(void);
+	void sensorUpdateMazeInOut(void);
 
+	//important procedures
 	void resampling(void);
+	void reset(void);
+
+	//stats
+	double sumOfWeights(void);
 
 	//noise
 	double m_distance_max_noise_ratio;
@@ -55,6 +63,10 @@ protected:
 	void normalizeTheta(double *theta_rad);
 
 	Map *m_map;
+
+	//parameters
+	static const double m_near_zero;
+	static const double m_reset_th;
 };
 
 #endif

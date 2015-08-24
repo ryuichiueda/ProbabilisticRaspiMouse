@@ -141,12 +141,18 @@ bool Map::collision(double org_global_x_mm, double org_global_y_mm,
 	return detail[0] || detail[1] || detail[2] || detail[3];
 }
 
-bool Map::inTheMap(double x_mm, double y_mm)
+bool Map::inTheMaze(double x_mm, double y_mm)
 {
+/*
 	if(x_mm <= 0.0)			return false;
 	if(x_mm >= m_x_width_mm)	return false;
 	if(y_mm <= 0.0)			return false;
 	if(y_mm >= m_y_width_mm)	return false;
+*/
 
-	return true;
+	Room *rm = posToRoom(x_mm,y_mm);
+	if(rm == NULL)
+		return false;
+
+	return (! rm->isClosed() );
 }
