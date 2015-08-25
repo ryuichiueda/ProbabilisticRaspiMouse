@@ -16,12 +16,11 @@ void SensorGyro::print(ofstream *ofs)
 void SensorGyro::update(void)
 {
 	ifstream ifs("/dev/ttyACM0");
-/*
 	if(!ifs){
+		int restart;
 		cerr << "no gyro" << endl;
-		exit(1);
+		cin >> restart;
 	}
-*/
 
 	m_prev = m_deg;
 	double tmp;
