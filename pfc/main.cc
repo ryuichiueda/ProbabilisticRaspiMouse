@@ -11,7 +11,7 @@ using namespace std;
 
 int main(int argc, char const* argv[])
 {
-	AgentPfc agent(argc,argv,0);
+	AgentPfc agent(argc,argv,3);
 	agent.doAction();
 	exit(0);
 }

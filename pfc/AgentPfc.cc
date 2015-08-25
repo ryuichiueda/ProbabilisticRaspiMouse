@@ -72,7 +72,8 @@ void AgentPfc::doAction(void)
 	//pf.pointReset(m_init_x_mm,m_init_y_mm,m_init_t_deg,5.0,3.0); //consideration of 5mm, 3deg error on placement
 	pf.randomReset();
 
-        ofstream ofs("/tmp/particles");
+        ofstream ofs("/home/pi/exp_log");
+	ofs << "step: 0" << endl;
         pf.print(&ofs);
 
         SensorGyro::update();
@@ -135,9 +136,9 @@ void AgentPfc::doAction(void)
 			break;
 		}
 			
+		ofs << "step: " << ++step << endl;
                 pf.print(&ofs);
         //        cerr << p.x_mm << '\t' << p.y_mm << '\t' << p.t_rad/3.141592*180.0 << endl;
-		cout << "step: " << ++step << endl;
                 usleep(100000);
 	}
 	
