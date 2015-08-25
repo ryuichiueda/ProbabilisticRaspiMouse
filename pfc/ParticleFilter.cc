@@ -309,10 +309,11 @@ bool ParticleFilter::reset(void)
 {
 	static int reset_times = 0;
 	if(sumOfWeights() < m_reset_th){
+/*
 		cerr << "sr" << endl;
 		sensorReset();
 	}
-/*
+*/
 		if(reset_times > 0){
 			cerr << "sr" << endl;
 			sensorReset();
@@ -327,7 +328,6 @@ bool ParticleFilter::reset(void)
 	}else{
 		reset_times = 0;
 	}
-*/
 	return false;
 
 //	randomReset();
