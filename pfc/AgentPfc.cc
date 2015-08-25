@@ -61,7 +61,8 @@ void AgentPfc::doAction(void)
         ifstream urandom("/dev/urandom");
         ParticleFilterGyro pf(1000,&urandom,m_map_name);
 
-	pf.pointReset(m_init_x_mm,m_init_y_mm,m_init_t_deg,5.0,3.0); //consideration of 5mm, 3deg error on placement
+	//pf.pointReset(m_init_x_mm,m_init_y_mm,m_init_t_deg,5.0,3.0); //consideration of 5mm, 3deg error on placement
+	pf.randomReset();
 
         ofstream ofs("/tmp/particles");
         pf.print(&ofs);
@@ -168,7 +169,7 @@ void AgentPfc::stateTransition(double x_mm,double y_mm,double theta_rad,
 
 string AgentPfc::getAction(ParticleFilterGyro *pf)
 {
-	for(auto p : pf->m_particles){
+	for(auto &p : pf->m_particles){
 		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
 		if(prev_i >= 0){
 			if(m_value[prev_i] == 0)
