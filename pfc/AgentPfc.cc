@@ -168,8 +168,85 @@ void AgentPfc::stateTransition(double x_mm,double y_mm,double theta_rad,
 
 string AgentPfc::getAction(ParticleFilterGyro *pf)
 {
+	double v_sum[3];
+
+	//fw evaluation
+	v_sum[0] = 0.0;
 	for(auto p : pf->m_particles){
-		cerr << p.x_mm << endl;
+		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
+		int prev_v = 10200;
+		if(prev_i >= 0)
+			prev_v = m_value[prev_i];
+		if(prev_v == 0)
+			continue;
+
+		double x = p.x_mm + 40.0*cos(p.t_rad);
+		double y = p.y_mm + 40.0*sin(p.t_rad);
+		int i = getIndex(x,y,p.t_rad/3.141592*180.0);
+		if(i >= 0)
+			v_sum[0] += m_value[i]*p.w/prev_v;
+		else
+			v_sum[0] += 10200.0*p.w/prev_v;
 	}
-	return "fw";
+
+	//cw evaluation
+	v_sum[1] = 0.0;
+	for(auto p : pf->m_particles){
+		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
+		int prev_v = 10200;
+		if(prev_i >= 0)
+			prev_v = m_value[prev_i];
+		if(prev_v == 0)
+			continue;
+
+		int i = getIndex(p.x_mm,p.y_mm,(p.t_rad/3.141592*180.0 - 5.0));
+		if(i >= 0)
+			v_sum[1] += m_value[i]*p.w/prev_v;
+		else
+			v_sum[1] += 10200.0*p.w/prev_v;
+	}
+	//ccw evaluation
+	v_sum[2] = 0.0;
+	for(auto p : pf->m_particles){
+		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
+		int prev_v = 10200;
+		if(prev_i >= 0)
+			prev_v = m_value[prev_i];
+		if(prev_v == 0)
+			continue;
+
+		int i = getIndex(p.x_mm,p.y_mm,(p.t_rad/3.141592*180.0 + 5.0));
+		if(i >= 0)
+			v_sum[2] += m_value[i]*p.w/prev_v;
+		else
+			v_sum[2] += 10200.0*p.w/prev_v;
+	}
+
+	if(v_sum[0] <= v_sum[1] && v_sum[0] <= v_sum[2])
+		return "fw";
+
+	if(v_sum[1] <= v_sum[2])
+		return "cw";
+
+	return "ccw";
+}
+
+int AgentPfc::getIndex(double x_mm,double y_mm,double theta_deg)
+{
+        int ix = floor(x_mm / m_cell_width_mm);
+        int iy = floor(y_mm / m_cell_width_mm);
+        int it = floor((theta_deg + (double)m_cell_width_deg/2)
+                        / m_cell_width_deg);
+
+        if(ix < 0 || ix >= m_cell_num_x)
+                return -1;
+        if(iy < 0 || iy >= m_cell_num_y)
+                return -1;
+
+        while(it < 0)
+                it += m_cell_num_t;
+        while(it >= m_cell_num_t)
+                it -= m_cell_num_t;
+
+        return it + m_cell_num_t*ix + m_cell_num_t*m_cell_num_x*iy;
 }
