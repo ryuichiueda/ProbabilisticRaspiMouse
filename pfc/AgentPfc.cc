@@ -168,8 +168,21 @@ void AgentPfc::stateTransition(double x_mm,double y_mm,double theta_rad,
 
 string AgentPfc::getAction(ParticleFilterGyro *pf)
 {
-	double v_sum[3];
+	for(auto p : pf->m_particles){
+		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
+		if(prev_i >= 0){
+			if(m_value[prev_i] == 0)
+				p.w *= 0.00001;
+		}else
+			p.w *= 0.00001;
+	}
+	
+/*
+	if(!pf->reset())
+		pf->resampling();
+*/
 
+	double v_sum[3];
 	//fw evaluation
 	v_sum[0] = 0.0;
 	for(auto p : pf->m_particles){
@@ -184,9 +197,9 @@ string AgentPfc::getAction(ParticleFilterGyro *pf)
 		double y = p.y_mm + 40.0*sin(p.t_rad);
 		int i = getIndex(x,y,p.t_rad/3.141592*180.0);
 		if(i >= 0)
-			v_sum[0] += m_value[i]*p.w/prev_v;
+			v_sum[0] += m_value[i]*p.w/pow(prev_v,m_power);
 		else
-			v_sum[0] += 10200.0*p.w/prev_v;
+			v_sum[0] += 10200.0*p.w/pow(prev_v,m_power);
 	}
 
 	//cw evaluation
@@ -201,9 +214,9 @@ string AgentPfc::getAction(ParticleFilterGyro *pf)
 
 		int i = getIndex(p.x_mm,p.y_mm,(p.t_rad/3.141592*180.0 - 5.0));
 		if(i >= 0)
-			v_sum[1] += m_value[i]*p.w/prev_v;
+			v_sum[1] += m_value[i]*p.w/pow(prev_v,m_power);
 		else
-			v_sum[1] += 10200.0*p.w/prev_v;
+			v_sum[1] += 10200.0*p.w/pow(prev_v,m_power);
 	}
 	//ccw evaluation
 	v_sum[2] = 0.0;
@@ -217,9 +230,9 @@ string AgentPfc::getAction(ParticleFilterGyro *pf)
 
 		int i = getIndex(p.x_mm,p.y_mm,(p.t_rad/3.141592*180.0 + 5.0));
 		if(i >= 0)
-			v_sum[2] += m_value[i]*p.w/prev_v;
+			v_sum[2] += m_value[i]*p.w/pow(prev_v,m_power);
 		else
-			v_sum[2] += 10200.0*p.w/prev_v;
+			v_sum[2] += 10200.0*p.w/pow(prev_v,m_power);
 	}
 
 	if(v_sum[0] <= v_sum[1] && v_sum[0] <= v_sum[2])
