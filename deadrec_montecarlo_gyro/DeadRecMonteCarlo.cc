@@ -31,8 +31,8 @@ void DeadRecMonteCarlo::motionUpdate(double fw_delta_mm,double side_delta_mm,dou
 		double x_noise = pos_noise * cos(pos_noise_angle);
 		double y_noise = pos_noise * sin(pos_noise_angle);
 
-		p.x_mm += fw_delta_mm * (cos(p.t_rad) + x_noise);
-		p.y_mm += fw_delta_mm * (sin(p.t_rad) + y_noise);
+		p.x_mm += fw_delta_mm * (cos(p.t_rad) + x_noise) + side_delta_mm * sin(p.t_rad);
+		p.y_mm += fw_delta_mm * (sin(p.t_rad) + y_noise) + side_delta_mm * cos(p.t_rad);
 
 		//theta方向
 		double ratio = m_direction_max_noise_ratio * (2*getDoubleRand()-1.0);
