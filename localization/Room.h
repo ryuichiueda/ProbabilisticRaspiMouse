@@ -2,7 +2,7 @@
 #define __ROOM_H_
 
 #include <vector>
-//#include <fstream>
+#include <fstream>
 using namespace std;
 
 
@@ -20,7 +20,7 @@ public:
 
 	bool isClosed(void);
 
-	void print(void);
+	void print(ofstream *ofs);
 private:
 	//vector<bool> m_pin;
 	vector<bool> m_wall;

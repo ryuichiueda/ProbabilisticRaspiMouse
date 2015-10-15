@@ -43,16 +43,17 @@ Map::Map(string mapfile)
 			m_rooms.push_back(Room(north,west,east,south,shift_x,shift_y));
 		}
 	}
-	print();
-	printEachRoom();
-	exit(0);
+
+	ofstream maplog("./__map");
+	print(&maplog);
+	printEachRoom(&maplog);
 }
 
 Map::~Map()
 {
 }
 
-void Map::print(void)
+void Map::print(ofstream *ofs)
 {
 /* draw a map form raw data
 +---+---+---+---+
@@ -69,30 +70,30 @@ void Map::print(void)
 		if(i%2==0){
 			for(int j=0;j<m_x_room_num;j++){
 				if(m_horizontal[j+(i/2)*m_x_room_num])
-					cout << "+---";
+					*ofs << "+---";
 				else
-					cout << "+   ";
+					*ofs << "+   ";
 			}
-			cout << "+";
+			*ofs << "+";
 		}else{
 			for(int j=0;j<m_x_room_num+1;j++){
 				if(m_vertical[j+(i/2)*(m_x_room_num+1)])
-					cout << "|   ";
+					*ofs << "|   ";
 				else
-					cout << "    ";
+					*ofs << "    ";
 			}
 		}
-		cout << endl;
+		*ofs << endl;
 	}
 }
 
-void Map::printEachRoom(void)
+void Map::printEachRoom(ofstream *ofs)
 {
 	int i = 0;
 	for(auto r : m_rooms){
-		cout << "* ROOM " << i++ << endl;
-		r.print();
-		cout << endl;
+		*ofs << "* ROOM " << i++ << endl;
+		r.print(ofs);
+		*ofs << endl;
 	}
 }
 

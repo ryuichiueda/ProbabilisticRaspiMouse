@@ -37,38 +37,38 @@ Room::~Room()
 {
 }
 
-void Room::print(void)
+void Room::print(ofstream *ofs)
 {
-	cout << "(x,y) = (" << m_x_origin_mm << ", " << m_y_origin_mm << ")" << endl;
+	*ofs << "(x,y) = (" << m_x_origin_mm << ", " << m_y_origin_mm << ")" << endl;
 	//north
 	if(m_wall.at(0))
-		cout << "+-------+" << endl;
+		*ofs << "+-------+" << endl;
 	else
-		cout << "+       +" << endl;
+		*ofs << "+       +" << endl;
 
 	//west & east
 	if(m_wall.at(1)){
 		for(int i=0;i<3;i++){
-			cout << "|";
+			*ofs << "|";
 			if(m_wall.at(2))
-				cout << "       |";
+				*ofs << "       |";
 
-			cout << endl;
+			*ofs << endl;
 		}
 	}else{
 		for(int i=0;i<3;i++){
-			cout << " ";
+			*ofs << " ";
 			if(m_wall.at(2))
-				cout << "       |";
+				*ofs << "       |";
 
-			cout << endl;
+			*ofs << endl;
 		}
 	}
 	//south
 	if(m_wall.at(3))
-		cout << "+-------+" << endl;
+		*ofs << "+-------+" << endl;
 	else
-		cout << "+       +" << endl;
+		*ofs << "+       +" << endl;
 }
 
 // theta should be normalized

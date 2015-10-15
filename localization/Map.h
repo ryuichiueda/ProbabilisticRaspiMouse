@@ -18,8 +18,8 @@ public:
 			double global_x_mm, double global_y_mm,bool *detail);
 	bool inTheMap(double x_mm, double y_mm);
 
-	void print(void);
-	void printEachRoom(void);
+	void print(ofstream *ofs);
+	void printEachRoom(ofstream *ofs);
 
 private:
 	vector<bool> m_horizontal;
