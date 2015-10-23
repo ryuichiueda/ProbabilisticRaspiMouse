@@ -73,7 +73,9 @@ void Room::print(ofstream *ofs)
 
 void Room::printImage(ofstream *ofs,bool *image)
 {
+	if(m_wall.at(0)){
 
+	}
 }
 
 // theta should be normalized
