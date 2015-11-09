@@ -6,10 +6,10 @@ vidir=$dir/value_iteration
 
 rm -f $dir/policy
 
-$sttdir/gen_state_trans > $dir/state_trans 2> $dir/values.0
+$sttdir/gen_state_trans > $dir/state_trans 2> $dir/final_states
 
 echo "vi"
-cat $dir/values.0			|
+cat $dir/final_states	|
 $vidir/value_iteration -p 10 $dir/state_trans	> $dir/values.ans
 
 while [ ! -e $dir/policy ] ; do
@@ -20,4 +20,4 @@ while [ ! -e $dir/policy ] ; do
 	mv $dir/values.tmp $dir/values.ans
 done
 
-rm -f $dir/values.0
+mv $dir/values.ans $dir/optimal_values
