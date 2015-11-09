@@ -1,0 +1,41 @@
+#!/bin/bash
+# draw_particles
+# usage: cat ./sample_data/particles | ./draw_particles > particles.ppm
+
+tmp=/tmp/$$
+
+W=360
+H=360
+
+cat << FIN 
+P3 $W $H 255
+FIN
+
+#world to image coordinate
+gawk -v "w=$W" -v "h=$H" '$6>0.0001{print int($3/2),int($4/2),$5*3.151492/180}'	|
+gawk -v "w=$W" -v "h=$H" '$1>=0 && $1<w && $2>=0 && $2<h'	|
+gawk -v "w=$W" -v "h=$H" '
+	{
+		for(i=-1;i<2;i++){
+			for(j=-1;j<2;j++){
+				a[($1+i)+($2+j)*w] = "black"
+			}
+		}
+
+		for(i=0;i<=6;i++){
+			dx = int(i*cos($3))
+			dy = int(i*sin($3))
+			a[($1+dx)+($2+dy)*w] = "green"
+		}
+	}
+	END{for(y=h-1;y>=0;y--){
+		for(x=0;x<w;x++){
+				if(a[x + y*w]=="black"){ print "0 0 0"; }
+				else if(a[x + y*w]=="green"){ print "0 255 0"; }
+				else{ print "255 255 255" }
+			}
+		}
+	}'
+
+rm -f $tmp-*
+

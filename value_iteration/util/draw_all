@@ -1,0 +1,22 @@
+#!/bin/bash -xv
+
+tmp=/tmp/$$
+
+awk '{printf("%03d\n",$1)}' "$1"	|
+uniq			|
+while read i ; do
+	j=$(sed 's/^0*//' <<< $i)
+	[ "$j" = "" ] && j=0
+	grep "^$j " "$1" > $tmp-step
+	[ "$(wc -l < $tmp-step)" -eq 0 ] && break
+
+	cat $tmp-step		|
+	./draw_particles 	> $i.ppm
+done
+
+
+convert -loop 1 -delay 100 *.ppm animation_all.gif
+rm -f $tmp-*
+rm *.ppm
+
+open -a safari animation_all.gif
