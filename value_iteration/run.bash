@@ -14,6 +14,6 @@ sudo chmod 666 /dev/rt*
 
 echo 1 > /dev/rtmotoren0
 
-cat $dir/input | $dir/main $dir/map
+$dir/main $dir/map $dir/offline_calculation/policy $dir/offline_calculation/optimal_values
 
 echo 0 > /dev/rtmotoren0
