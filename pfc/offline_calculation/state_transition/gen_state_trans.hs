@@ -69,12 +69,12 @@ isWall iy ix
 --}
 
 isWall iy ix
- | ix < 2      || iy < 2           = True
- | ix >= xnum-2 || iy >= ynum-2    = True
- | ix <= 10 && iy <= 10            = True
- | ix >= 16 && ix <=28 && iy <= 10 = True
- | ix >= 7 && ix <= 19 && iy >= 16 = True
- | ix >= 25 && iy >= 16            = True
+ | ix < 3      || iy < 3           = True
+ | ix >= xnum-3 || iy >= ynum-3    = True
+ | ix <= 11 && iy <= 11            = True
+ | ix >= 15 && ix <=29 && iy <= 11 = True
+ | ix >= 6 && ix <= 20 && iy >= 15 = True
+ | ix >= 24 && iy >= 15            = True
  | otherwise                       = False
 
 state_trans_header = mapM_ putStrLn ["%%metadata%%",
