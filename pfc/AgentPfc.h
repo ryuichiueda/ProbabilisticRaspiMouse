@@ -35,6 +35,8 @@ private:
 	int getIndex(double x_mm,double y_mm,double theta_deg);
 	string getAction(ParticleFilterGyro *pf);
 	int m_power;
+
+	int m_worst_value;
 };
 
 #endif

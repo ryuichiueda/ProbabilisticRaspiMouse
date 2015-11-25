@@ -57,6 +57,17 @@ stCheck es = if length cs == 0 then es else []
 
 normalizeIT it = (it + tnum*100) `mod` tnum
 
+{--
+isWall iy ix
+ | ix < 2      || iy < 2           = True
+ | ix >= xnum-2 || iy >= ynum-2    = True
+ | ix <= 10 && iy <= 10            = True
+ | ix >= 16 && ix <=28 && iy <= 10 = True
+ | ix >= 7 && ix <= 19 && iy >= 16 = True
+ | ix >= 25 && iy >= 16            = True
+ | otherwise                       = False
+--}
+
 isWall iy ix
  | ix < 2      || iy < 2           = True
  | ix >= xnum-2 || iy >= ynum-2    = True
