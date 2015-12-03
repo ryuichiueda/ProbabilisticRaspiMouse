@@ -68,6 +68,7 @@ isWall iy ix
  | otherwise                       = False
 --}
 
+{--
 isWall iy ix
  | ix < 3      || iy < 3           = True
  | ix >= xnum-3 || iy >= ynum-3    = True
@@ -75,6 +76,18 @@ isWall iy ix
  | ix >= 15 && ix <=29 && iy <= 11 = True
  | ix >= 6 && ix <= 20 && iy >= 15 = True
  | ix >= 24 && iy >= 15            = True
+ | otherwise                       = False
+--}
+
+isWall iy ix
+ | ix < 3      || iy < 3           = True
+ | ix >= xnum-3 || iy >= ynum-3    = True
+ | ix >= 6 && ix <=11 && iy <= 11  = True
+ | ix >= 15 && ix <=20 && iy <= 11 = True
+ | ix >= 24 && ix <=29 && iy <= 11 = True
+ | ix >= 6 && ix <=11 && iy >= 15  = True
+ | ix >= 15 && ix <=20 && iy >= 15 = True
+ | ix >= 24 && ix <=29 && iy >= 15 = True
  | otherwise                       = False
 
 state_trans_header = mapM_ putStrLn ["%%metadata%%",
