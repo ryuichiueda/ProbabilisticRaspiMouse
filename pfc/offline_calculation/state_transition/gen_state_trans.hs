@@ -25,7 +25,7 @@ stateTrans' s a
     where header = unwords ["state",stateId s,"action",a]
 
 isFinalState :: (Int,Int,Int) -> Bool
-isFinalState (iy,ix,it) = (ix >= 11 && ix <= 15 ) && (iy <= 5)
+isFinalState (iy,ix,it) = (ix >= 11 && ix <= 15 ) && (iy <= 3)
 
 stateTrans'' (iy,ix,it) a
  | a == "fw" = stateTransFw (iy,ix,it)
