@@ -25,7 +25,7 @@ stateTrans' s a
     where header = unwords ["state",stateId s,"action",a]
 
 isFinalState :: (Int,Int,Int) -> Bool
-isFinalState (iy,ix,it) = (ix >= 11 && ix <= 15 ) && (iy <= 3)
+isFinalState (iy,ix,it) = (ix >= 9 && ix <= 17 ) && (iy <= 5)
 
 stateTrans'' (iy,ix,it) a
  | a == "fw" = stateTransFw (iy,ix,it)
@@ -57,16 +57,14 @@ stCheck es = if length cs == 0 then es else []
 
 normalizeIT it = (it + tnum*100) `mod` tnum
 
-{--
 isWall iy ix
- | ix < 2      || iy < 2           = True
- | ix >= xnum-2 || iy >= ynum-2    = True
- | ix <= 10 && iy <= 10            = True
- | ix >= 16 && ix <=28 && iy <= 10 = True
- | ix >= 7 && ix <= 19 && iy >= 16 = True
- | ix >= 25 && iy >= 16            = True
+ | ix < 1      || iy < 1           = True
+ | ix >= xnum-1 || iy >= ynum-1    = True
+ | ix <= 9 && iy <= 9            = True
+ | ix >= 17 && ix <=27 && iy <= 9 = True
+ | ix >= 8 && ix <= 18 && iy >= 17 = True
+ | ix >= 26 && iy >= 17            = True
  | otherwise                       = False
---}
 
 {--
 isWall iy ix
@@ -78,17 +76,6 @@ isWall iy ix
  | ix >= 24 && iy >= 15            = True
  | otherwise                       = False
 --}
-
-isWall iy ix
- | ix < 3      || iy < 3           = True
- | ix >= xnum-3 || iy >= ynum-3    = True
- | ix >= 6 && ix <=11 && iy <= 11  = True
- | ix >= 15 && ix <=20 && iy <= 11 = True
- | ix >= 24 && ix <=29 && iy <= 11 = True
- | ix >= 6 && ix <=11 && iy >= 15  = True
- | ix >= 15 && ix <=20 && iy >= 15 = True
- | ix >= 24 && ix <=29 && iy >= 15 = True
- | otherwise                       = False
 
 state_trans_header = mapM_ putStrLn ["%%metadata%%",
     "statenum " ++ (show state_num),

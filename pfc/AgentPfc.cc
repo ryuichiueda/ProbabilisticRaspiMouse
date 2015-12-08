@@ -83,9 +83,15 @@ void AgentPfc::doAction(void)
                 SensorRange::update();
                 pf.sensorUpdate();
 
-                Particle p = pf.getAverage();
-		string str = getAction(&pf,&ofs);
-		ofs << "a:" << str << endl;
+                //Particle p = pf.getAverage();
+		for(auto &p : pf.m_particles){
+			int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
+			if(prev_i >= 0 && m_value[prev_i] == 0)
+				p.w *= 0.00001;
+		}
+		//m_power = 0.0;
+		string str = getAction(&pf);
+		cerr << "a:" << str << endl;
 
 		if(str == "fw"){
                         Actions::forward(40);
@@ -178,20 +184,15 @@ void AgentPfc::stateTransition(double x_mm,double y_mm,double theta_rad,
 	*atheta_rad = theta_rad + rad;
 }
 
-string AgentPfc::getAction(ParticleFilterGyro *pf,ofstream *ofs)
+string AgentPfc::getAction(ParticleFilterGyro *pf)
 {
-	for(auto &p : pf->m_particles){
-		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
-		if(prev_i >= 0 && m_value[prev_i] == 0)
-			p.w *= 0.00001;
-	}
 
 	double v_sum[3];
 	double prev = 0.0;
 	for(auto p : pf->m_particles){//prev value
 		int prev_i = getIndex(p.x_mm,p.y_mm,p.t_rad/3.141592*180.0);
 		if(prev_i >= 0 && m_value[prev_i] != 0)
-			prev += m_value[prev_i]*p.w/pow(m_value[prev_i]/100.0,m_power);
+			prev += m_value[prev_i]*p.w/pow(m_value[prev_i]/100,m_power);
 	}
 
 	//fw evaluation
@@ -207,14 +208,19 @@ string AgentPfc::getAction(ParticleFilterGyro *pf,ofstream *ofs)
 		double x = p.x_mm + 40.0*cos(p.t_rad);
 		double y = p.y_mm + 40.0*sin(p.t_rad);
 		int i = getIndex(x,y,p.t_rad/3.141592*180.0);
-		if(i >= 0){
+		if(i >= 0 && i < m_cell_num_x*m_cell_num_y*m_cell_num_t){
 			if(m_value[i] >= m_worst_value)
-				v_sum[0] += prev_v*p.w/pow(prev_v/100.0,m_power);
-			else
-				v_sum[0] += m_value[i]*p.w/pow(prev_v/100.0,m_power);
+				v_sum[0] += prev_v*p.w/pow(prev_v/100,m_power);
+			else{
+				v_sum[0] += m_value[i]*p.w/pow(prev_v/100,m_power);
+				cerr << m_value[i] << '\t' << prev_v << '\t';
+				cerr << p.x_mm << '\t' << p.y_mm << '\t' << p.t_rad/3.141592*180.0 << '\t';
+				cerr << x << '\t' << y << '\t' << p.t_rad/3.141592*180.0 << '\t' <<
+				p.w << endl;
+			}
 
 		}else
-			v_sum[0] += prev_v*p.w/pow(prev_v/100.0,m_power);
+			v_sum[0] += prev_v*p.w/pow(prev_v/100,m_power);
 	}
 
 	//cw evaluation
@@ -228,10 +234,10 @@ string AgentPfc::getAction(ParticleFilterGyro *pf,ofstream *ofs)
 			continue;
 
 		int i = getIndex(p.x_mm,p.y_mm,(p.t_rad/3.141592*180.0 - 5.0));
-		if(i >= 0)
-			v_sum[1] += m_value[i]*p.w/pow(prev_v/100.0,m_power);
+		if(i >= 0 && i < m_cell_num_x*m_cell_num_y*m_cell_num_t)
+			v_sum[1] += m_value[i]*p.w/pow(prev_v/100,m_power);
 		else
-			v_sum[1] += prev_v*p.w/pow(prev_v/100.0,m_power);
+			v_sum[1] += prev_v*p.w/pow(prev_v/100,m_power);
 	}
 	//ccw evaluation
 	v_sum[2] = 0.0;
@@ -244,15 +250,13 @@ string AgentPfc::getAction(ParticleFilterGyro *pf,ofstream *ofs)
 			continue;
 
 		int i = getIndex(p.x_mm,p.y_mm,(p.t_rad/3.141592*180.0 + 5.0));
-		if(i >= 0)
-			v_sum[2] += m_value[i]*p.w/pow(prev_v/100.0,m_power);
+		if(i >= 0 && i < m_cell_num_x*m_cell_num_y*m_cell_num_t)
+			v_sum[2] += m_value[i]*p.w/pow(prev_v/100,m_power);
 		else
-			v_sum[2] += prev_v*p.w/pow(prev_v/100.0,m_power);
+			v_sum[2] += prev_v*p.w/pow(prev_v/100,m_power);
 	}
 
-	cerr << "v_diff: " << v_sum[0] - prev << '\t' << v_sum[1] - prev << '\t' <<  v_sum[2] - prev << endl;
-	if(v_sum[0] >= prev && v_sum[1] >= prev && v_sum[2] >= prev)
-		return "fw";
+	cerr << v_sum[0] - prev << '\t' << v_sum[1] - prev << '\t' <<  v_sum[2] - prev << endl;
 
 	if(v_sum[0] <= v_sum[1] && v_sum[0] <= v_sum[2])
 		return "fw";
